@@ -368,14 +368,14 @@ def getS1Alt(options):
         fmean = img.add(30).focal_mean(focalSize)
         ratio0 = fmean.select('VH').divide(fmean.select('VV')).rename('VH/VV').multiply(30)
         ratio1 = fmean.select('VV').divide(fmean.select('VH')).rename('VV/VH').multiply(30)
-        return img.select().addBands(fmean).addBands(ratio0)..addBands(ratio1)
+        return img.select().addBands(fmean).addBands(ratio0).addBands(ratio1)
 
     def s1Deg(img):
         pwr = ee.Image(10).pow(img.divide(10))
         pwr = pwr.select('VV').subtract(pwr.select('VH')).divide(pwr.select('VV').add(pwr.select('VH'))) \
             .rename('RFDI')
         ratio0 = img.select('VV').divide(img.select('VH')).rename('VV/VH')
-        ratio1= img.select('VH').divide(img.select('VV')).rename('VH/VV')
+        ratio1 = img.select('VH').divide(img.select('VV')).rename('VH/VV')
 
         return img.addBands(pwr).addBands(ratio0).addBands(ratio1)
 

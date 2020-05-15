@@ -556,7 +556,7 @@ def getDegradationPlotsByPointS1(geometry, start, end, band):
         geometry = ee.Geometry.Point(geometry)
 
     sentinel1Data = gee.inputs.getS1Alt({
-        "targetBands": ['VV','VH','VV/VH'],
+        "targetBands": [band],
         'region':geometry}).filterDate(start,end)
 
     def myimageMapper(img):
