@@ -1263,9 +1263,15 @@ def getImagePlotDegradition():
             start = json.get('start')
             end = json.get('end')
             band = json.get('band', 'NDFI')
-            values = {
-                'timeseries': getDegradationPlotsByPoint(geometry, start, end, band)
-            }
+            dataType = json.get('dataType', 'landsat')
+            if dataType == 'landsat':
+                values = {
+                    'timeseries': getDegradationPlotsByPoint(geometry, start, end, band)
+                }
+            else:
+                values = {
+                    'timeseries': getDegradationPlotsByPointS1(geometry, start, end, band)
+                }
         else:
             raise Exception(
                 "Need either image or imageCollection parameter containing the full name")
@@ -1285,12 +1291,27 @@ def getDegraditionTileUrl():
             imageDate = json.get('imageDate', None)
             geometry = json.get('geometry')
             stretch = json.get('stretch', 321)
-            visParams = {'bands': 'RED,GREEN,BLUE', 'min': 0, 'max': 1400}
-            if stretch == 543:
+            visParams = {}
+            if stretch == 321:
+                visParams = {'bands': 'RED,GREEN,BLUE', 'min': 0, 'max': 1400}
+            elif stretch == 543:
                 visParams ={'bands': 'SWIR1,NIR,RED', 'min': 0, 'max': 7000}
-            values = {
-                "url": getDegraditionTileUrlByDate(geometry, imageDate, visParams)
-            }
+            elif stretch == "SAR":
+                visParams = {'bands':'VV,VH,VV/VH', 'min':'-15,-25,.40', 'max': '0,-10,1', 'gamma': '1.6' }
+            tparams = json.get('visParams', "")
+
+            dataType = json.get('dataType', 'landsat')
+            if tparams != "":
+                visParams = tparams
+
+            if dataType == 'landsat':
+                values = {
+                    "url": getDegraditionTileUrlByDate(geometry, imageDate, visParams)#(getDegraditionTileUrlByDateS1(geometry, imageDate, visParams),getDegraditionTileUrlByDate(geometry, imageDate, visParams))[dataType == "landsat"]
+                }
+            else:
+                values = {
+                    "url": getDegraditionTileUrlByDateS1(geometry, imageDate, visParams)
+                }
         else:
             raise Exception(
                 "Need either imageDate and geometry parameters")

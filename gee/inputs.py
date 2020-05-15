@@ -355,7 +355,7 @@ def getS1Alt(options):
             focalSize = options['focalSize']
         else:
             focalSize = None
-        if mode in options:
+        if "mode" in options:
             mode = options['mode']
         else:
             mode = 'ASCENDING'
